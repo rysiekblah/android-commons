@@ -42,6 +42,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 
         Log.e(TAG, "ERROR: " + errorReport.toString());
 
+        // TODO: not run thread every time, create executor and check if strategy isFast
         if (strategy != null) {
             Thread th = new Thread() {
                 @Override

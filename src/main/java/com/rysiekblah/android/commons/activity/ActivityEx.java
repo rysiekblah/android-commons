@@ -9,7 +9,7 @@ import com.rysiekblah.android.commons.exception.UncaughtExceptionHandler;
 /**
  * Created by tomek on 7/5/14.
  */
-public abstract class ActivityEx extends Activity {
+public class ActivityEx extends Activity {
 
     protected ExceptionHandlingStrategy myExceptionHandlingStrategy() {
         return null;
