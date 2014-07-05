@@ -1,0 +1,36 @@
+apply plugin: 'java'
+buildscript {
+    repositories {
+        def androidHome = System.getenv("ANDROID_HOME")
+        maven {
+            url "$androidHome/extras/android/m2repository/"
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+allprojects {
+    repositories {
+        def androidHome = System.getenv("ANDROID_HOME")
+        maven {
+            url "$androidHome/extras/android/m2repository/"
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+dependencies {
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.android:android:+'
+    compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.android.support:support-v4:+'
+    compile 'com.google.guava:guava:16.0'
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.easytesting:fest-assert:1.4'
+    testCompile 'com.google.android:android:+'
+    testCompile 'com.android.support:support-v4:19.0.1'
+    testCompile 'org.robolectric:robolectric:2.+'
+
+}
