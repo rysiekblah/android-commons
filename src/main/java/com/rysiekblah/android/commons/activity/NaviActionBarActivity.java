@@ -19,6 +19,16 @@ public abstract class NaviActionBarActivity extends ActionBarActivity {
 
     protected abstract ExceptionHandlingStrategy myExceptionHandlingStrategy();
 
+    protected abstract boolean isExceptionHandingEnabled();
+
+    protected UncaughtExceptionHandler createHandler() {
+        if (myExceptionHandlingStrategy() == null) {
+            return new UncaughtExceptionHandler();
+        } else {
+            return new UncaughtExceptionHandler(myExceptionHandlingStrategy());
+        }
+    }
+
     protected void navigateUp(Activity activity) {
         Intent upIntent = NavUtils.getParentActivityIntent(activity);
         if (upIntent == null) {
@@ -34,7 +44,9 @@ public abstract class NaviActionBarActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(myExceptionHandlingStrategy()));
+        if (isExceptionHandingEnabled()) {
+            Thread.setDefaultUncaughtExceptionHandler(createHandler());
+        }
     }
 
 }

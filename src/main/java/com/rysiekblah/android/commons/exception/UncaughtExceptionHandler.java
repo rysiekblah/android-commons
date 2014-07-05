@@ -16,13 +16,16 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
         this.strategy = strategy;
     }
 
+    public UncaughtExceptionHandler() {
+
+    }
+
     @Override
     public void uncaughtException(Thread thread, Throwable exception) {
-//        StringWriter stackTrace = new StringWriter();
-//        exception.printStackTrace(new PrintWriter(stackTrace));
+
         final StringBuilder errorReport = new StringBuilder();
         errorReport.append("CAUSE OF ERROR:\n\n");
-        errorReport.append(StackTraceReader.go(exception));
+        errorReport.append(StackTraceReader.asString(exception));
         //errorReport.append(stackTrace.toString());
 
         errorReport.append("\nDEVICE INFORMATION:\n");
@@ -39,13 +42,15 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 
         Log.e(TAG, "ERROR: " + errorReport.toString());
 
-        Thread th = new Thread() {
-            @Override
-            public void run() {
-                strategy.execute();
-            }
-        };
-        th.start();
-
+        if (strategy != null) {
+            Thread th = new Thread() {
+                @Override
+                public void run() {
+                    strategy.execute(errorReport.toString());
+                }
+            };
+            th.start();
+        }
     }
+
 }
