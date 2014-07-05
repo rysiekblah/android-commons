@@ -17,7 +17,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     }
 
     public UncaughtExceptionHandler() {
-
+        this.strategy = null;
     }
 
     @Override
