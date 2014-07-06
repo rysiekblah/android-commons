@@ -51,7 +51,12 @@ public class MediaFilesUtils {
         return inSampleSize;
     }
 
-
+    public static Bitmap decodeAndResize(String path) {
+        if (mediaFileStrategy == null) {
+            throw new MediaFileException("MediaFileStrategy missing");
+        }
+        return decodeAndResize(path, mediaFileStrategy);
+    }
 
     public static Bitmap decodeAndResize(String path, MediaFileStrategy strategy) {
 
@@ -67,9 +72,23 @@ public class MediaFilesUtils {
         return BitmapFactory.decodeFile(path, options);
     }
 
+    public static Uri getOutputMediaFileUri(int type) {
+        if (mediaFileStrategy == null) {
+            throw new MediaFileException("MediaFileStrategy missing");
+        }
+        return getOutputMediaFileUri(type, mediaFileStrategy);
+    }
+
     /** Create a file Uri for saving an image or video */
     public static Uri getOutputMediaFileUri(int type, MediaFileStrategy strategy){
         return Uri.fromFile(getOutputMediaFile(type, strategy));
+    }
+
+    public static File getOutputMediaFile(int type) {
+        if (mediaFileStrategy == null) {
+            throw new MediaFileException("MediaFileStrategy missing");
+        }
+        return getOutputMediaFile(type, mediaFileStrategy);
     }
 
     /** Create a File for saving an image or video */

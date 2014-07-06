@@ -26,7 +26,6 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
         final StringBuilder errorReport = new StringBuilder();
         errorReport.append("CAUSE OF ERROR:\n\n");
         errorReport.append(StackTraceReader.asString(exception));
-        //errorReport.append(stackTrace.toString());
 
         errorReport.append("\nDEVICE INFORMATION:\n");
         errorReport.append("Brand: ").append(Build.BRAND).append(LINE_SEPARATOR);
@@ -42,8 +41,11 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 
         Log.e(TAG, "ERROR: " + errorReport.toString());
 
-        // TODO: not run thread every time, create executor and check if strategy isFast
         if (strategy != null) {
+            if (strategy.isFast()) {
+                strategy.execute(errorReport.toString());
+                return;
+            }
             Thread th = new Thread() {
                 @Override
                 public void run() {

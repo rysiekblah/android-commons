@@ -17,9 +17,13 @@ public abstract class NaviActionBarActivity extends ActionBarActivity {
 
     protected abstract Class myParent();
 
-    protected abstract ExceptionHandlingStrategy myExceptionHandlingStrategy();
+    protected ExceptionHandlingStrategy myExceptionHandlingStrategy() {
+        return null;
+    };
 
-    protected abstract boolean isExceptionHandingEnabled();
+    protected boolean isExceptionHandingEnabled() {
+        return false;
+    }
 
     protected UncaughtExceptionHandler createHandler() {
         if (myExceptionHandlingStrategy() == null) {
