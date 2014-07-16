@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.common.base.Function;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +23,27 @@ public class MediaFilesUtils {
 
     private static final String MEDIA_IMAGE_EXTENSION = ".jpg";
     private static final String MEDIA_VIDEO_EXTENSION = ".mp4";
+
+    private static final Function<Date, String> TIMESTAMP = new Function<Date, String>() {
+        @Override
+        public String apply(Date input) {
+            return new SimpleDateFormat("yyyyMMdd_HHmmss").format(input);
+        }
+    };
+
+    private static final Function<String, File> IMAGE_FILE = new Function<String, File>() {
+        @Override
+        public File apply(String path) {
+            return new File(path + File.separator + "IMG_" + TIMESTAMP.apply(new Date()) + MEDIA_IMAGE_EXTENSION);
+        }
+    };
+
+    private static final Function<String, File> VIDEO_FILE = new Function<String, File>() {
+        @Override
+        public File apply(String path) {
+            return new File(path + File.separator + "VID_" + TIMESTAMP.apply(new Date()) + MEDIA_VIDEO_EXTENSION);
+        }
+    };
 
     private static MediaFileStrategy mediaFileStrategy;
 
@@ -64,12 +87,22 @@ public class MediaFilesUtils {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
-        PictureDescriptor picture = strategy.transform(options.outWidth, options.outHeight);
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, picture.width, picture.height);
+
+        if (strategy == null) {
+            options.inSampleSize = calculateInSampleSize(options, options.outWidth, options.outHeight);
+        } else {
+            PictureDescriptor picture = strategy.transform(options.outWidth, options.outHeight);
+            // Calculate inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, picture.width, picture.height);
+        }
+
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(path, options);
+    }
+
+    public static Bitmap decode(String path) {
+        return decodeAndResize(path, null);
     }
 
     public static Uri getOutputMediaFileUri(int type) {
@@ -96,7 +129,8 @@ public class MediaFilesUtils {
         return getOutputMediaFile(pathDiskSpace(strategy), type);
     }
 
-    public static File getOutputMediaFile(String folder, int type){
+    public static File getOutputMediaFile(String folder, int type) {
+        // TODO:
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -112,15 +146,11 @@ public class MediaFilesUtils {
             }
         }
 
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + MEDIA_IMAGE_EXTENSION);
+        if (type == MEDIA_TYPE_IMAGE) {
+            mediaFile = IMAGE_FILE.apply(mediaStorageDir.getPath());
         } else if(type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + MEDIA_VIDEO_EXTENSION);
+            mediaFile = VIDEO_FILE.apply(mediaStorageDir.getPath());
         } else {
             return null;
         }
@@ -143,6 +173,5 @@ public class MediaFilesUtils {
         Log.d(APP_TAG, "Path exists");
         return true;
     }
-
 
 }
