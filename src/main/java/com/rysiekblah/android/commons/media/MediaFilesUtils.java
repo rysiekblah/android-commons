@@ -51,8 +51,14 @@ public class MediaFilesUtils {
         mediaFileStrategy = strategy;
     }
 
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    /**
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -65,8 +71,7 @@ public class MediaFilesUtils {
 
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
+            while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
                 inSampleSize *= 2;
             }
         }
@@ -74,6 +79,11 @@ public class MediaFilesUtils {
         return inSampleSize;
     }
 
+    /**
+     *
+     * @param path
+     * @return
+     */
     public static Bitmap decodeAndResize(String path) {
         if (mediaFileStrategy == null) {
             throw new MediaFileException("MediaFileStrategy missing");
@@ -81,6 +91,12 @@ public class MediaFilesUtils {
         return decodeAndResize(path, mediaFileStrategy);
     }
 
+    /**
+     *
+     * @param path
+     * @param strategy
+     * @return
+     */
     public static Bitmap decodeAndResize(String path, MediaFileStrategy strategy) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
@@ -101,10 +117,20 @@ public class MediaFilesUtils {
         return BitmapFactory.decodeFile(path, options);
     }
 
+    /**
+     *
+     * @param path
+     * @return
+     */
     public static Bitmap decode(String path) {
         return decodeAndResize(path, null);
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public static Uri getOutputMediaFileUri(int type) {
         if (mediaFileStrategy == null) {
             throw new MediaFileException("MediaFileStrategy missing");
@@ -112,11 +138,21 @@ public class MediaFilesUtils {
         return getOutputMediaFileUri(type, mediaFileStrategy);
     }
 
-    /** Create a file Uri for saving an image or video */
+    /**
+     * Create a file Uri for saving an image or video
+     * @param type
+     * @param strategy
+     * @return
+     */
     public static Uri getOutputMediaFileUri(int type, MediaFileStrategy strategy){
         return Uri.fromFile(getOutputMediaFile(type, strategy));
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public static File getOutputMediaFile(int type) {
         if (mediaFileStrategy == null) {
             throw new MediaFileException("MediaFileStrategy missing");
@@ -129,6 +165,12 @@ public class MediaFilesUtils {
         return getOutputMediaFile(pathDiskSpace(strategy), type);
     }
 
+    /**
+     *
+     * @param folder
+     * @param type
+     * @return
+     */
     public static File getOutputMediaFile(String folder, int type) {
         // TODO:
         // To be safe, you should check that the SDCard is mounted
@@ -158,11 +200,21 @@ public class MediaFilesUtils {
         return mediaFile;
     }
 
+    /**
+     *
+     * @param strategy
+     * @return
+     */
     public static String pathDiskSpace(MediaFileStrategy strategy) {
         return Environment.getExternalStorageDirectory() + "/" + strategy.getFolder();
     }
 
 
+    /**
+     *
+     * @param strategy
+     * @return
+     */
     public static boolean createDiscSpace(MediaFileStrategy strategy) {
         Log.d(APP_TAG, "Creating app folder on SD " + pathDiskSpace(strategy));
         File file = new File(pathDiskSpace(strategy));

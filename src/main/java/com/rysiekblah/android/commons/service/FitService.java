@@ -1,15 +1,14 @@
-package com.rysiekblah.android.commons.activity;
+package com.rysiekblah.android.commons.service;
 
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.app.Service;
 
 import com.rysiekblah.android.commons.exception.ExceptionHandlingStrategy;
 import com.rysiekblah.android.commons.exception.UncaughtExceptionHandler;
 
 /**
- * Created by tomek on 7/5/14.
+ * Created by tomek on 7/17/14.
  */
-public class ActionBarActivityEx extends ActionBarActivity {
+public abstract class FitService extends Service {
 
     protected ExceptionHandlingStrategy myExceptionHandlingStrategy() {
         return null;
@@ -28,11 +27,9 @@ public class ActionBarActivityEx extends ActionBarActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate() {
         if (isExceptionHandingEnabled()) {
             Thread.setDefaultUncaughtExceptionHandler(createHandler());
         }
     }
-
 }
