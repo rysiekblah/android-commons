@@ -12,36 +12,31 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.rysiekblah.android.commons.media.MediaConstants.*;
+
 /**
  * Created by tomek on 7/5/14.
  */
 public class MediaFilesUtils {
 
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
-    public static final String APP_TAG = "";
-
-    private static final String MEDIA_IMAGE_EXTENSION = ".jpg";
-    private static final String MEDIA_VIDEO_EXTENSION = ".mp4";
-
     private static final Function<Date, String> TIMESTAMP = new Function<Date, String>() {
         @Override
         public String apply(Date input) {
-            return new SimpleDateFormat("yyyyMMdd_HHmmss").format(input);
+            return new SimpleDateFormat(DATE_FORMAT).format(input);
         }
     };
 
     private static final Function<String, File> IMAGE_FILE = new Function<String, File>() {
         @Override
         public File apply(String path) {
-            return new File(path + File.separator + "IMG_" + TIMESTAMP.apply(new Date()) + MEDIA_IMAGE_EXTENSION);
+            return new File(path + File.separator + IMG_PREFIX + TIMESTAMP.apply(new Date()) + MEDIA_IMAGE_EXTENSION);
         }
     };
 
     private static final Function<String, File> VIDEO_FILE = new Function<String, File>() {
         @Override
         public File apply(String path) {
-            return new File(path + File.separator + "VID_" + TIMESTAMP.apply(new Date()) + MEDIA_VIDEO_EXTENSION);
+            return new File(path + File.separator + VID_PREFIX + TIMESTAMP.apply(new Date()) + MEDIA_VIDEO_EXTENSION);
         }
     };
 
@@ -52,7 +47,8 @@ public class MediaFilesUtils {
     }
 
     /**
-     *
+     * Method calculate numer of samples to process given bitmap. It based on developer.android
+     * tutorial to avoid OutOfMemoryError.
      * @param options
      * @param reqWidth
      * @param reqHeight
@@ -77,6 +73,10 @@ public class MediaFilesUtils {
         }
 
         return inSampleSize;
+    }
+
+    public static Bitmap decodeWithEffect(String path, MediaFileStrategy strategy) {
+        return strategy.transform(decode(path));
     }
 
     /**
